@@ -313,6 +313,15 @@ if (process.env.NODE_ENV === 'production') {
   app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../dist/public/index.html'));
   });
+} else {
+  // في بيئة التطوير، توجيه جميع الطلبات غير API إلى Vite
+  app.get('*', (req, res) => {
+    if (!req.path.startsWith('/api')) {
+      res.redirect('http://localhost:5173' + req.path);
+    } else {
+      res.status(404).json({ message: 'API endpoint not found' });
+    }
+  });
 }
 
 // Create HTTP server
